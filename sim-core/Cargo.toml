@@ -1,0 +1,16 @@
+[package]
+name = "sim-core"
+version = "0.1.0"
+edition = "2021"
+description = "Simulation core for the city traffic simulator, compiled to WebAssembly"
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+wasm-bindgen = "0.2"
+
+[profile.release]
+opt-level = 3
+lto = true

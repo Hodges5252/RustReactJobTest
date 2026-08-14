@@ -1,0 +1,14 @@
+# Rust
+/sim-core/target/
+Cargo.lock.orig
+
+# wasm-pack output (built by CI / local build script)
+/web/src/wasm/
+
+# Node
+/web/node_modules/
+/web/dist/
+
+# Editor/OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/wasm/sim_core.d.ts","./src/wasm/sim_core_bg.wasm.d.ts"],"version":"5.9.3"}

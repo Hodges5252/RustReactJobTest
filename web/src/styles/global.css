@@ -1,0 +1,31 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: #f5f2ec;
+  color: #4a4a4a;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 16px;
+  gap: 12px;
+}
+
+.status-bar {
+  font-size: 14px;
+}
+
+.city-canvas {
+  max-width: min(92vmin, 900px);
+  max-height: min(92vmin, 900px);
+  width: 100%;
+  height: auto;
+}
