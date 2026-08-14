@@ -8,8 +8,10 @@ use crate::rng::Rng;
 /// speed, within the 5-10 minute range required by spec 2.5.
 pub const TIME_SCALE: f32 = (DAY_END - DAY_START) / 420.0;
 
-/// Phase 3 uses a small population; scaled up for full scheduling in Phase 4.
-pub const POPULATION: usize = 15;
+/// Total resident pool. Only mid-trip agents count toward the 100-200
+/// concurrently-active target (spec 2.3/2.9); this pool size produces
+/// peak-period concurrency in that band.
+pub const POPULATION: usize = 700;
 
 /// Congestion-driven edge weights are refreshed at this sim-time interval.
 const WEIGHT_REFRESH_INTERVAL: f32 = 30.0;

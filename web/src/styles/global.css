@@ -39,6 +39,33 @@ body {
   letter-spacing: 0.02em;
 }
 
+.time-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.clock {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  min-width: 72px;
+  text-align: center;
+}
+
+.play-pause {
+  min-width: 62px;
+}
+
+.speed-group {
+  display: flex;
+  gap: 4px;
+}
+
+button.speed.active {
+  background: #55524c;
+  color: #f7f4ee;
+}
+
 .seed-bar {
   display: flex;
   align-items: center;

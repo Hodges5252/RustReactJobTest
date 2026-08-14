@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import init from "./wasm/sim_core";
 import CityCanvas from "./components/CityCanvas";
 import SeedBar from "./components/SeedBar";
+import TimeControls from "./components/TimeControls";
 import { useSimulation } from "./hooks/useSimulation";
 import { getOrCreateSeed, randomSeed, setSeedInUrl } from "./seed";
 
@@ -34,6 +35,13 @@ export default function App() {
     <div className="app">
       <header className="top-bar">
         <span className="app-title">City Traffic Simulator</span>
+        <TimeControls
+          clockSec={sim.clockSec}
+          playing={sim.playing}
+          onTogglePlay={() => sim.setPlaying(!sim.playing)}
+          speed={sim.speed}
+          onSetSpeed={sim.setSpeed}
+        />
         {seed !== null && <SeedBar seed={seed} onRegenerate={regenerate} />}
       </header>
       {sim.geometry ? (
