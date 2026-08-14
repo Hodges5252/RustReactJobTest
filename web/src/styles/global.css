@@ -22,12 +22,12 @@ body {
 .top-bar {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 22px;
   flex-wrap: wrap;
   justify-content: center;
   width: 100%;
-  max-width: 900px;
-  padding: 10px 18px;
+  max-width: 960px;
+  padding: 10px 20px;
   background: #ffffff;
   border-radius: 14px;
   box-shadow: 0 1px 3px rgba(90, 85, 75, 0.08);
@@ -64,6 +64,21 @@ body {
 button.speed.active {
   background: #55524c;
   color: #f7f4ee;
+}
+
+.stats-panel {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: #8a857c;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.stat-value {
+  color: #55524c;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }
 
 .seed-bar {

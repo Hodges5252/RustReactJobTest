@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import init from "./wasm/sim_core";
 import CityCanvas from "./components/CityCanvas";
 import SeedBar from "./components/SeedBar";
+import StatsPanel from "./components/StatsPanel";
 import TimeControls from "./components/TimeControls";
 import { useSimulation } from "./hooks/useSimulation";
 import { getOrCreateSeed, randomSeed, setSeedInUrl } from "./seed";
@@ -42,6 +43,7 @@ export default function App() {
           speed={sim.speed}
           onSetSpeed={sim.setSpeed}
         />
+        <StatsPanel stats={sim.stats} />
         {seed !== null && <SeedBar seed={seed} onRegenerate={regenerate} />}
       </header>
       {sim.geometry ? (
