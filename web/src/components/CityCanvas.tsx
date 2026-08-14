@@ -13,6 +13,26 @@ const COLORS = {
   agents: ["#5d8fc4", "#dd8f2e", "#83779f"],
 };
 
+// Neutral -> amber -> soft red congestion ramp (kept calm per spec 2.6).
+const CONGESTION_STOPS: [number, number, number][] = [
+  [214, 208, 198], // free flow (neutral road)
+  [232, 176, 78], // amber
+  [217, 110, 85], // soft warm red
+];
+
+/** Map a congestion amount in [0, 1] to a road color. */
+function congestionColor(c: number): string {
+  const t = Math.min(Math.max(c, 0), 1) * (CONGESTION_STOPS.length - 1);
+  const i = Math.min(Math.floor(t), CONGESTION_STOPS.length - 2);
+  const f = t - i;
+  const [r1, g1, b1] = CONGESTION_STOPS[i];
+  const [r2, g2, b2] = CONGESTION_STOPS[i + 1];
+  const r = Math.round(r1 + (r2 - r1) * f);
+  const g = Math.round(g1 + (g2 - g1) * f);
+  const b = Math.round(b1 + (b2 - b1) * f);
+  return `rgb(${r},${g},${b})`;
+}
+
 /** Static city geometry pulled once from WASM (it never changes for a seed). */
 export interface CityGeometry {
   nodes: Float32Array;
@@ -94,7 +114,15 @@ function drawFrame(
     const a = edges[i * 2];
     const b = edges[i * 2 + 1];
     const isArterial = arterial[i] === 1;
-    ctx.strokeStyle = isArterial ? COLORS.roadArterial : COLORS.roadLocal;
+    // speed_factor spans 1.0 (free) down to 0.2 (jammed); normalize to [0,1].
+    const factor = frame ? frame.edgeFactors[i] : 1;
+    const congestion = (1 - factor) / 0.8;
+    ctx.strokeStyle =
+      congestion > 0.02
+        ? congestionColor(congestion)
+        : isArterial
+          ? COLORS.roadArterial
+          : COLORS.roadLocal;
     ctx.lineWidth = isArterial ? 11 : 7;
     ctx.beginPath();
     ctx.moveTo(wx(nodes[a * 2]), wx(nodes[a * 2 + 1]));
