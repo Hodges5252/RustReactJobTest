@@ -6,8 +6,8 @@
 
 body {
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-  background: #f5f2ec;
-  color: #4a4a4a;
+  background: #f7f4ee;
+  color: #55524c;
 }
 
 .app {
@@ -15,17 +15,68 @@ body {
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  padding: 16px;
-  gap: 12px;
+  padding: 16px 24px;
+  gap: 14px;
 }
 
-.status-bar {
+.top-bar {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  max-width: 900px;
+  padding: 10px 18px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 1px 3px rgba(90, 85, 75, 0.08);
   font-size: 14px;
 }
 
+.app-title {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.seed-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.seed-label {
+  font-variant-numeric: tabular-nums;
+  color: #8a857c;
+  font-size: 13px;
+}
+
+button {
+  font: inherit;
+  font-size: 13px;
+  padding: 5px 12px;
+  border: none;
+  border-radius: 9px;
+  background: #efece5;
+  color: #55524c;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+button:hover {
+  background: #e4e0d6;
+}
+
 .city-canvas {
-  max-width: min(92vmin, 900px);
-  max-height: min(92vmin, 900px);
+  max-width: min(88vmin, 900px);
+  max-height: min(88vmin, 900px);
   width: 100%;
   height: auto;
+  border-radius: 18px;
+}
+
+.loading {
+  margin-top: 40vh;
+  color: #8a857c;
 }
