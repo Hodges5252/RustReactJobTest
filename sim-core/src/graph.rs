@@ -1,8 +1,10 @@
 use crate::city::{node_index, City, NODES_PER_SIDE};
 
-/// Base travel speed on local streets, world units per simulated second.
-pub const LOCAL_BASE_SPEED: f32 = 40.0;
-pub const ARTERIAL_BASE_SPEED: f32 = 55.0;
+/// Base travel speed in world units per simulated second, tuned so a typical
+/// cross-town trip takes ~20-25 simulated minutes (a believable commute that
+/// also produces visible rush-hour overlap between agents).
+pub const LOCAL_BASE_SPEED: f32 = 0.55;
+pub const ARTERIAL_BASE_SPEED: f32 = 0.78;
 pub const LOCAL_CAPACITY: f32 = 6.0;
 pub const ARTERIAL_CAPACITY: f32 = 12.0;
 

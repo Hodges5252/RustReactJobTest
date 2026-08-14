@@ -1,54 +1,43 @@
 import { useEffect, useState } from "react";
-import init, { Sim } from "./wasm/sim_core";
-import CityCanvas, { extractGeometry, type CityGeometry } from "./components/CityCanvas";
+import init from "./wasm/sim_core";
+import CityCanvas from "./components/CityCanvas";
 import SeedBar from "./components/SeedBar";
+import { useSimulation } from "./hooks/useSimulation";
 import { getOrCreateSeed, randomSeed, setSeedInUrl } from "./seed";
-
-interface CityState {
-  seed: bigint;
-  geometry: CityGeometry;
-}
 
 export default function App() {
   const [wasmReady, setWasmReady] = useState(false);
-  const [city, setCity] = useState<CityState | null>(null);
+  const [seed, setSeed] = useState<bigint | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     init().then(() => {
-      if (!cancelled) setWasmReady(true);
+      if (!cancelled) {
+        setWasmReady(true);
+        setSeed(getOrCreateSeed());
+      }
     });
     return () => {
       cancelled = true;
     };
   }, []);
 
-  useEffect(() => {
-    if (!wasmReady) return;
-    buildCity(getOrCreateSeed());
-  }, [wasmReady]);
-
-  const buildCity = (seed: bigint) => {
-    const sim = new Sim(seed);
-    const geometry = extractGeometry(sim);
-    sim.free();
-    setCity({ seed, geometry });
-  };
+  const sim = useSimulation(seed, wasmReady);
 
   const regenerate = () => {
-    const seed = randomSeed();
-    setSeedInUrl(seed);
-    buildCity(seed);
+    const next = randomSeed();
+    setSeedInUrl(next);
+    setSeed(next);
   };
 
   return (
     <div className="app">
       <header className="top-bar">
         <span className="app-title">City Traffic Simulator</span>
-        {city && <SeedBar seed={city.seed} onRegenerate={regenerate} />}
+        {seed !== null && <SeedBar seed={seed} onRegenerate={regenerate} />}
       </header>
-      {city ? (
-        <CityCanvas geometry={city.geometry} />
+      {sim.geometry ? (
+        <CityCanvas geometry={sim.geometry} subscribe={sim.subscribe} />
       ) : (
         <div className="loading">generating city…</div>
       )}

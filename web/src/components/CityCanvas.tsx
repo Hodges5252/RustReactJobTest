@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef } from "react";
 import type { Sim } from "../wasm/sim_core";
+import type { FrameData } from "../hooks/useSimulation";
 
 const CANVAS_SIZE = 900;
 
@@ -8,6 +9,8 @@ const COLORS = {
   roadLocal: "#d6d0c6",
   roadArterial: "#cdc6ba",
   zones: ["#a5c6e5", "#f2b25c", "#b3aac2"], // residential, commercial, industrial
+  // Vehicle dots, slightly deeper than zone fills so they read on roads.
+  agents: ["#5d8fc4", "#dd8f2e", "#83779f"],
 };
 
 /** Static city geometry pulled once from WASM (it never changes for a seed). */
@@ -33,9 +36,10 @@ export function extractGeometry(sim: Sim): CityGeometry {
 
 interface Props {
   geometry: CityGeometry;
+  subscribe: (fn: (frame: FrameData) => void) => () => void;
 }
 
-export default function CityCanvas({ geometry }: Props) {
+export default function CityCanvas({ geometry, subscribe }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const transform = useMemo(() => {
@@ -51,9 +55,11 @@ export default function CityCanvas({ geometry }: Props) {
     canvas.width = CANVAS_SIZE * dpr;
     canvas.height = CANVAS_SIZE * dpr;
     const ctx = canvas.getContext("2d")!;
-    ctx.scale(dpr, dpr);
-    drawCity(ctx, geometry, transform);
-  }, [geometry, transform]);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    drawFrame(ctx, geometry, transform, null);
+    return subscribe((frame) => drawFrame(ctx, geometry, transform, frame));
+  }, [geometry, transform, subscribe]);
 
   return (
     <canvas
@@ -69,12 +75,13 @@ interface Transform {
   scale: number;
 }
 
-function drawCity(
+function drawFrame(
   ctx: CanvasRenderingContext2D,
   geo: CityGeometry,
   t: Transform,
+  frame: FrameData | null,
 ): void {
-  const wx = (x: number) => (x + t.pad) * t.scale;
+  const wx = (v: number) => (v + t.pad) * t.scale;
   const { nodes, edges, arterial, blockZones, blockCorners } = geo;
 
   ctx.fillStyle = COLORS.background;
@@ -117,6 +124,20 @@ function drawCity(
     ctx.fillStyle = COLORS.zones[blockZones[b]] ?? COLORS.zones[0];
     roundedQuad(ctx, pts, 10);
     ctx.fill();
+  }
+
+  // Vehicles: simple dots colored by destination zone type.
+  if (frame) {
+    const { agents } = frame;
+    for (let i = 0; i < agents.length / 3; i++) {
+      const x = wx(agents[i * 3]);
+      const y = wx(agents[i * 3 + 1]);
+      const zone = agents[i * 3 + 2];
+      ctx.fillStyle = COLORS.agents[zone] ?? COLORS.agents[0];
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, Math.PI * 2);
+      ctx.fill();
+    }
   }
 }
 

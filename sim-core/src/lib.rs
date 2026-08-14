@@ -1,7 +1,9 @@
 use wasm_bindgen::prelude::*;
 
+pub mod agents;
 pub mod city;
 pub mod graph;
+pub mod pathfinding;
 pub mod rng;
 pub mod simulation;
 
@@ -84,5 +86,55 @@ impl Sim {
             }
         }
         out
+    }
+
+    // --- Per-frame simulation API ---
+
+    /// Advance the simulation by `real_dt` real seconds (speed multiplier
+    /// already applied by the caller).
+    pub fn tick(&mut self, real_dt: f32) {
+        self.inner.tick(real_dt);
+    }
+
+    /// Current sim clock in seconds since midnight.
+    pub fn clock_seconds(&self) -> f32 {
+        self.inner.clock
+    }
+
+    /// Active (mid-trip) agents as a flat buffer: [x, y, dest_zone] per agent.
+    pub fn agent_states(&self) -> Vec<f32> {
+        let mut out = Vec::with_capacity(self.inner.agents.len() * 3);
+        for a in &self.inner.agents {
+            if let Some(trip) = &a.trip {
+                let (x, y) = self.inner.trip_position(trip);
+                out.push(x);
+                out.push(y);
+                out.push(a.dest_zone as u8 as f32);
+            }
+        }
+        out
+    }
+
+    /// Current congestion speed factor per road segment (1.0 = free flow).
+    pub fn edge_speed_factors(&self) -> Vec<f32> {
+        self.inner
+            .graph
+            .edges
+            .iter()
+            .map(|e| e.speed_factor)
+            .collect()
+    }
+
+    pub fn active_trip_count(&self) -> u32 {
+        self.inner.active_trip_count()
+    }
+
+    /// Average completed-trip travel time in sim seconds (0 if none yet).
+    pub fn avg_travel_time(&self) -> f32 {
+        if self.inner.completed_trips == 0 {
+            0.0
+        } else {
+            self.inner.total_travel_time / self.inner.completed_trips as f32
+        }
     }
 }
