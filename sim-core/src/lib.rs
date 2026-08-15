@@ -88,6 +88,41 @@ impl Sim {
         out
     }
 
+    // --- Merged block groups (spec UPDATE 2.3) ---
+
+    /// Group id per block, row-major (indexes into the group arrays below).
+    pub fn block_group_ids(&self) -> Vec<u32> {
+        self.inner.city.block_group.clone()
+    }
+
+    /// Zone type per block group (0 residential, 1 commercial, 2 industrial).
+    pub fn block_group_zones(&self) -> Vec<u8> {
+        self.inner.city.groups.iter().map(|g| g.zone as u8).collect()
+    }
+
+    /// Offsets into `block_group_outline_nodes` per group; length is
+    /// group count + 1, so group g's outline is nodes[offsets[g]..offsets[g+1]].
+    pub fn block_group_outline_offsets(&self) -> Vec<u32> {
+        let mut out = Vec::with_capacity(self.inner.city.groups.len() + 1);
+        let mut acc = 0u32;
+        out.push(0);
+        for g in &self.inner.city.groups {
+            acc += g.outline.len() as u32;
+            out.push(acc);
+        }
+        out
+    }
+
+    /// Concatenated outer-boundary node indices of every block group
+    /// (clockwise), indexed via `block_group_outline_offsets`.
+    pub fn block_group_outline_nodes(&self) -> Vec<u32> {
+        let mut out = Vec::new();
+        for g in &self.inner.city.groups {
+            out.extend_from_slice(&g.outline);
+        }
+        out
+    }
+
     // --- Per-frame simulation API ---
 
     /// Advance the simulation by `real_dt` real seconds (speed multiplier

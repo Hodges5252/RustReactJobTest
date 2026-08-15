@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import init from "./wasm/sim_core";
 import CityCanvas from "./components/CityCanvas";
+import Legend from "./components/Legend";
 import SeedBar from "./components/SeedBar";
 import StatsPanel from "./components/StatsPanel";
 import TimeControls from "./components/TimeControls";
@@ -47,7 +48,10 @@ export default function App() {
         {seed !== null && <SeedBar seed={seed} onRegenerate={regenerate} />}
       </header>
       {sim.geometry ? (
-        <CityCanvas geometry={sim.geometry} subscribe={sim.subscribe} />
+        <>
+          <Legend />
+          <CityCanvas geometry={sim.geometry} subscribe={sim.subscribe} />
+        </>
       ) : (
         <div className="loading">generating city…</div>
       )}

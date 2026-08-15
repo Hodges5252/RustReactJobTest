@@ -20,6 +20,15 @@ GitHub Actions.
 - Share a city via the `?seed=` URL parameter — the same seed always produces
   the identical city.
 
+A realism & variety pass (see `UPDATE_DOC.md`) adds: per-direction lane
+offsets and follow-the-leader spacing so vehicles no longer overlap; dead-end
+stub roads and connectivity-checked pruning of local streets for a less
+uniform grid; larger merged blocks spanning 2-3 same-zone cells (including
+occasional L-shaped ones) with their interior road removed; midday and
+evening errand trips that keep the city alive between rush hours; visible
+"driveway" pull-in/pull-out at both ends of every trip; and a small legend
+explaining zone colors and the congestion ramp.
+
 ## Prerequisites
 
 | Tool | Version | Install |
